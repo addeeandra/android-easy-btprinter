@@ -1,3 +1,3 @@
-include ':app'
+include ':btmanager'
 include ':btdemo'
 rootProject.name = "Easy BTPrinter"
