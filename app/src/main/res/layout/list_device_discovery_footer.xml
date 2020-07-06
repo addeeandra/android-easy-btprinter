@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="discovering"
+            type="boolean" />
+
+        <variable
+            name="listener"
+            type="com.inibukanadit.easybtprinter.listeners.OnDeviceDiscoveryListFooterClickListener" />
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:minHeight="40dp"
+        android:onClick="@{() -> listener.onFooterClickAndRediscover()}"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="@{discovering ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_check"
+            android:tint="@color/colorPrimary"
+            android:visibility="@{!discovering ? View.VISIBLE : View.GONE}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_discovering_devices"
+            android:textSize="12sp"
+            android:visibility="@{discovering ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_discovered"
+            android:textSize="12sp"
+            android:visibility="@{!discovering ? View.VISIBLE : View.GONE}" />
+
+    </LinearLayout>
+
+</layout>

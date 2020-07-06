@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Easy BTPrinter</string>
+    <string name="notice_permissions_required">The requested permissions are required to use this feature</string>
+    <string name="notice_bluetooth_unsupported">Bluetooth not supported</string>
+    <string name="hint_discovering_devices">Discovering available devices ..</string>
+    <string name="hint_discovered">All set! Tap here to re-discover.</string>
+    <string name="hint_tap_to_add_device">Tap here to add new stored device ..</string>
+    <string name="paired">Paired</string>
+</resources>
