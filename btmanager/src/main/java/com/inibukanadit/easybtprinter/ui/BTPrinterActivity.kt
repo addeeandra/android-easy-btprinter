@@ -12,6 +12,7 @@ import com.inibukanadit.easybtprinter.common.util.BTPrinterUtil
 import com.inibukanadit.easybtprinter.receiver.BTPrinterActionReceiver
 import com.inibukanadit.easybtprinter.ui.discovery.DeviceDiscoveryListFragment
 import com.inibukanadit.easybtprinter.ui.stored.StoredDeviceListFragment
+import kotlinx.android.synthetic.main.activity_btprinter.*
 
 class BTPrinterActivity : AppCompatActivity() {
 
@@ -25,6 +26,8 @@ class BTPrinterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_btprinter)
+
+        toolbar?.title = intent?.getStringExtra(Intent.EXTRA_TITLE) ?: getString(R.string.app_name)
 
         viewModel = ViewModelProvider(this).get(BTPrinterViewModel::class.java)
         onPrepareObservers()

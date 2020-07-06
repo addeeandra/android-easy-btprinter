@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BTPrinter Demo</string>
+    <string name="blutooth_manager">Bluetooth Manager</string>
 </resources>

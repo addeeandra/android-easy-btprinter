@@ -15,7 +15,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.inibukanadit.easybtprinter.ui.BTPrinterActivity" />
+        <activity
+            android:name="com.inibukanadit.easybtprinter.ui.BTPrinterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -4,13 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.inibukanadit.easybtprinter.ui.BTPrinterActivity
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivity(Intent(this, BTPrinterActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
+        setContentView(R.layout.activity_main)
+
+        btn_open_discoveries.setOnClickListener {
+            startActivity(Intent(this, BTPrinterActivity::class.java).apply {
+                putExtra(Intent.EXTRA_TITLE, getString(R.string.blutooth_manager))
+            })
+        }
     }
 }
