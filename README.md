@@ -1,8 +1,26 @@
-# Android Easy BTPrinter
+## Android BTPrinter - Easy Bluetooth Device (Printer) Manager
 
 [![](https://jitpack.io/v/inibukanadit/android-easy-btprinter.svg)](https://jitpack.io/#inibukanadit/android-easy-btprinter)
 
 No more struggle on discovering, storing or picking stored devices to print directly.
+
+
+Favorite Devices
+---
+![](https://i.ibb.co/jf3kV78/image.png "Title")
+![](https://i.ibb.co/s90FL2h/image.png "Title")
+
+
+Device Discoveries
+---
+![](https://i.ibb.co/zmN0ybh/image.png "Title")
+![](https://i.ibb.co/Jr5DsD9/image.png "Title")
+
+
+Test Printing
+---
+![](https://i.ibb.co/FYrtTDg/image.png "Title")
+
 
 [Currently under development state]
 
