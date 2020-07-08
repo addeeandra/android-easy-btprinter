@@ -1,8 +1,10 @@
 # Android Easy BTPrinter
 
+[![](https://jitpack.io/v/inibukanadit/android-easy-btprinter.svg)](https://jitpack.io/#inibukanadit/android-easy-btprinter)
+
 No more struggle on discovering, storing or picking stored devices to print directly.
 
-[Under development]
+[Unstable]
 
 In Development
 - [x] Device discoveries
