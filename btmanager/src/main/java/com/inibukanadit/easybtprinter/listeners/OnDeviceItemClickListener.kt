@@ -2,7 +2,7 @@ package com.inibukanadit.easybtprinter.listeners
 
 import android.bluetooth.BluetoothDevice
 
-interface OnDeviceListClickListener {
+interface OnDeviceItemClickListener {
 
     fun onDeviceClick(device: BluetoothDevice)
 

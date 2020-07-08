@@ -1,14 +1,19 @@
 package com.inibukanadit.easybtprinter.ui
 
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.inibukanadit.easybtprinter.common.lifecycle.CombinedTransformation
 import com.inibukanadit.easybtprinter.common.lifecycle.event.LiveEvent
 import com.inibukanadit.easybtprinter.common.lifecycle.event.MutableLiveEvent
 import com.inibukanadit.easybtprinter.common.mutateList
+import com.inibukanadit.easybtprinter.common.util.BTPrinterUtil
 import com.inibukanadit.easybtprinter.receiver.BTPrinterActionListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
 
@@ -20,11 +25,11 @@ class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
     private val _isDiscovering by lazy { MutableLiveEvent<Boolean>() }
     val isDiscovering: LiveEvent<Boolean> = _isDiscovering
 
-    private val _onStartDiscoveryEvent by lazy { MutableLiveEvent<Unit>() }
-    val onStartDiscoveryEvent: LiveEvent<Unit> = _onStartDiscoveryEvent
-
     private val _openDiscoveryPageEvent by lazy { MutableLiveEvent<Unit>() }
     val openDiscoveryPageEvent: LiveEvent<Unit> = _openDiscoveryPageEvent
+
+    private val _openBluetoothActionDialogEvent by lazy { MutableLiveEvent<BluetoothDevice>() }
+    val openBluetoothActionDialogEvent: LiveEvent<BluetoothDevice> = _openBluetoothActionDialogEvent
 
     /*
      * List of paired devices which obtained from bondedDevices function in adapter
@@ -86,12 +91,33 @@ class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
         _isDiscovering.put(false)
     }
 
-    fun startDiscovery() {
-        _onStartDiscoveryEvent.put(Unit)
+    fun toggleDiscovery() {
+        if (BTPrinterUtil.isDiscovering()) BTPrinterUtil.cancelDiscovery()
+        else BTPrinterUtil.startDiscovery()
     }
 
+    fun testPrint(device: BluetoothDevice, content: String) {
+        Log.d("ViewModel", "Test print : $content")
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("ViewModel", "Starting printing ..")
+            BTPrinterUtil.immediatePrintToDevice(device, content)
+            Log.d("ViewModel", "Printing completed ..")
+        }
+    }
+
+    fun saveDevice(device: BluetoothDevice) {
+        Log.d("ViewModel", "Save device : ${device.address}")
+    }
+
+    /**
+     * open page / ui related functions
+     */
     fun openDiscoveryPage() {
         _openDiscoveryPageEvent.put(Unit)
+    }
+
+    fun openBluetoothActionDialog(device: BluetoothDevice) {
+        _openBluetoothActionDialogEvent.put(device)
     }
 
 }

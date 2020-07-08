@@ -11,6 +11,10 @@
             name="data"
             type="android.bluetooth.BluetoothDevice" />
 
+        <variable
+            name="listener"
+            type="com.inibukanadit.easybtprinter.listeners.OnDeviceItemClickListener" />
+
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
+        android:onClick="@{() -> listener.onDeviceClick(data)}"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp">

@@ -10,9 +10,11 @@ import com.inibukanadit.easybtprinter.common.util.DiffUtil
 import com.inibukanadit.easybtprinter.databinding.ListDeviceBinding
 import com.inibukanadit.easybtprinter.databinding.ListDeviceDiscoveryFooterBinding
 import com.inibukanadit.easybtprinter.listeners.OnDeviceDiscoveryListFooterClickListener
+import com.inibukanadit.easybtprinter.listeners.OnDeviceItemClickListener
 
 class DeviceDiscoveryListAdapter(
-    private val mFooterClickListener: OnDeviceDiscoveryListFooterClickListener
+    private val mOnFooterClickListener: OnDeviceDiscoveryListFooterClickListener,
+    private val mOnDeviceItemClickListener: OnDeviceItemClickListener
 ) : ListAdapter<BluetoothDevice, DeviceDiscoveryListAdapter.ViewHolder>(DiffUtil.ofBluetoothDevice()) {
 
     var isDiscovering: Boolean = false
@@ -37,8 +39,8 @@ class DeviceDiscoveryListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder) {
-            is NormalViewHolder -> holder.bind(getItem(position))
-            is FooterViewHolder -> holder.bind(isDiscovering, mFooterClickListener)
+            is NormalViewHolder -> holder.bind(getItem(position), mOnDeviceItemClickListener)
+            is FooterViewHolder -> holder.bind(isDiscovering, mOnFooterClickListener)
         }
     }
 
@@ -55,8 +57,9 @@ class DeviceDiscoveryListAdapter(
     inner class NormalViewHolder(
         private val binding: ListDeviceBinding
     ) : ViewHolder(binding.root) {
-        fun bind(device: BluetoothDevice) {
+        fun bind(device: BluetoothDevice, listener: OnDeviceItemClickListener) {
             binding.data = device
+            binding.listener = listener
             binding.executePendingBindings()
         }
     }

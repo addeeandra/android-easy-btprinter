@@ -1,13 +1,17 @@
 package com.inibukanadit.easybtprinter.ui
 
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.inibukanadit.easybtprinter.R
+import com.inibukanadit.easybtprinter.common.toast
 import com.inibukanadit.easybtprinter.common.util.BTPrinterUtil
 import com.inibukanadit.easybtprinter.receiver.BTPrinterActionReceiver
 import com.inibukanadit.easybtprinter.ui.discovery.DeviceDiscoveryListFragment
@@ -40,6 +44,8 @@ class BTPrinterActivity : AppCompatActivity() {
         registerReceiver(mBTActionReceiver, btActionFilter)
 
         showStoredDeviceListPage()
+
+        BTPrinterUtil.checkRequiredBluetoothPermissions(this)
     }
 
     override fun onDestroy() {
@@ -48,8 +54,12 @@ class BTPrinterActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        BTPrinterUtil.handleActivityResult(this, requestCode, resultCode)
-        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BTPrinterUtil.RC_ENABLE_BLUETOOTH_FOR_DISCOVERY &&
+            resultCode == Activity.RESULT_OK &&
+            data?.getBooleanExtra(BTPrinterUtil.KEY_SHOULD_REDISCOVER, false) == true
+        ) {
+            BTPrinterUtil.startDiscovery()
+        } else super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(
@@ -57,18 +67,20 @@ class BTPrinterActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        BTPrinterUtil.handlePermissionsResult(this, requestCode, permissions, grantResults)
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == BTPrinterUtil.RC_PERMISSION_FOR_DISCOVERY) {
+            if (grantResults.any { it != PackageManager.PERMISSION_GRANTED }) {
+                toast(R.string.notice_permissions_required)
+                finish()
+            }
+        } else super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun onPrepareObservers() {
-        viewModel.onStartDiscoveryEvent.observe(this) {
-            BTPrinterUtil.checkRequiredPermissionsThenRun(this) {
-                BTPrinterUtil.startBTDeviceDiscovery(this)
-            }
-        }
         viewModel.openDiscoveryPageEvent.observe(this) {
             showDiscoveryDeviceListPage()
+        }
+        viewModel.openBluetoothActionDialogEvent.observe(this) {
+            showBluetoothActionDialog(it)
         }
     }
 
@@ -82,6 +94,7 @@ class BTPrinterActivity : AppCompatActivity() {
     }
 
     private fun showDiscoveryDeviceListPage() {
+        BTPrinterUtil.startDiscovery(this)
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
@@ -89,6 +102,24 @@ class BTPrinterActivity : AppCompatActivity() {
                 this.viewModel = this@BTPrinterActivity.viewModel
             })
             .commit()
+    }
+
+    private fun showBluetoothActionDialog(device: BluetoothDevice) {
+        AlertDialog
+            .Builder(this)
+            .setCancelable(false)
+            .setTitle(
+                getString(R.string.ask_save_as_saved_device)
+                    .format(device.name ?: device.address)
+            )
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setItems(R.array.bt_action_chooser) { _, which ->
+                when (which) {
+                    0 -> viewModel.testPrint(device, "WOWOWOWOWOWOWOWO\n\nTEST PRINT HERE\nwkwkwk\n\n")
+                    1 -> viewModel.saveDevice(device)
+                }
+            }
+            .show()
     }
 
 }
