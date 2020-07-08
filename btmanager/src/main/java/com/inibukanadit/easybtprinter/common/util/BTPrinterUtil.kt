@@ -59,7 +59,7 @@ object BTPrinterUtil {
 
         if (!defaultBluetoothAdapter.isEnabled) {
             if (activityForAutoEnable != null) {
-                requestToEnableBluetooth(activityForAutoEnable, shouldRediscoverAfterEnabled)
+                enableBluetooth(activityForAutoEnable, shouldRediscoverAfterEnabled)
             }
             return false
         }
@@ -79,7 +79,7 @@ object BTPrinterUtil {
         return defaultBluetoothAdapter?.isDiscovering == true
     }
 
-    fun requestToEnableBluetooth(context: Activity, shouldAutoDiscover: Boolean = false) {
+    fun enableBluetooth(context: Activity, shouldAutoDiscover: Boolean = false) {
         if (defaultBluetoothAdapter == null) return
 
         if (!defaultBluetoothAdapter.isEnabled) {
@@ -97,6 +97,11 @@ object BTPrinterUtil {
         }
     }
 
+    fun immediatePrintToAddress(address: String, message: String) {
+        getRemoteDevice(address)
+            ?.let { device -> immediatePrintToDevice(device, message) }
+    }
+
     fun immediatePrintToDevice(device: BluetoothDevice, message: String) {
         Log.i("BTPrinter", "Direct Printing to ${device.address}")
         connectToDevice(device, true)
@@ -104,9 +109,8 @@ object BTPrinterUtil {
         disconnectFromDevice(device)
     }
 
-    fun immediatePrintToAddress(address: String, message: String) {
-        defaultBluetoothAdapter?.getRemoteDevice(address)
-            ?.let { device -> immediatePrintToDevice(device, message) }
+    fun disconnectFromAddress(address: String) {
+        getRemoteDevice(address)?.let { device -> disconnectFromDevice(device) }
     }
 
     fun disconnectFromDevice(device: BluetoothDevice) {
@@ -115,14 +119,8 @@ object BTPrinterUtil {
         Log.i("BTPrinter", "Disconnected from ${device.address}")
     }
 
-    fun disconnectFromAddress(address: String) {
-        defaultBluetoothAdapter?.getRemoteDevice(address)
-            ?.let { device -> disconnectFromDevice(device) }
-    }
-
     fun connectToAddress(address: String, secure: Boolean = false) {
-        defaultBluetoothAdapter?.getRemoteDevice(address)
-            ?.let { device -> connectToDevice(device, secure) }
+        getRemoteDevice(address)?.let { device -> connectToDevice(device, secure) }
     }
 
     fun connectToDevice(device: BluetoothDevice, secure: Boolean = false) {
@@ -131,7 +129,7 @@ object BTPrinterUtil {
         if (socketConnections[device.address]?.isConnected() == true) return
 
         try {
-            requestToPairWithBTDevice(device, secure).also { sock ->
+            pairToDevice(device, secure).also { sock ->
                 sock.connect()
                 socketConnections[device.address] = ConnectedThread(sock)
                     .also { conn -> conn.start() }
@@ -158,7 +156,7 @@ object BTPrinterUtil {
         }
     }
 
-    fun requestToPairWithBTDevice(
+    fun pairToDevice(
         device: BluetoothDevice,
         secure: Boolean = false
     ): BluetoothSocket {
@@ -171,8 +169,7 @@ object BTPrinterUtil {
     }
 
     fun writeMessageToAddress(address: String, message: String) {
-        defaultBluetoothAdapter?.getRemoteDevice(address)
-            ?.let { device -> writeMessageToDevice(device, message) }
+        getRemoteDevice(address)?.let { device -> writeMessageToDevice(device, message) }
     }
 
     fun writeMessageToDevice(device: BluetoothDevice, message: String) {
@@ -185,15 +182,12 @@ object BTPrinterUtil {
         }
     }
 
-    class ContentWriterThread(
-        private val mmConnectedThread: ConnectedThread,
-        private val mmContent: String
-    ) : Thread() {
+    fun getRemoteDevice(address: String): BluetoothDevice {
+        return defaultBluetoothAdapter?.getRemoteDevice(address)!!
+    }
 
-        override fun run() {
-            mmConnectedThread.write(mmContent.toByteArray())
-        }
-
+    fun getTestPrintContent(): String {
+        return "Portable Printer Test Print\n-------16-------\nNumber\n1234567890\n\nLower case\nabcdefghijklmnopqrstuvwxyz\n\nUpper case\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n\nSymbolic\n!@#$%^&*()_+{}[]:\";\'<,>.?/|\\----------24----------"
     }
 
     class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {

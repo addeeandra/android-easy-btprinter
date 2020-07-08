@@ -1,5 +1,6 @@
 package com.inibukanadit.easybtprinter.ui.stored
 
+import android.bluetooth.BluetoothDevice
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.inibukanadit.easybtprinter.R
 import com.inibukanadit.easybtprinter.common.util.RecyclerUtil
+import com.inibukanadit.easybtprinter.listeners.OnDeviceItemClickListener
 import com.inibukanadit.easybtprinter.listeners.OnStoredDeviceListFooterClickListener
 import com.inibukanadit.easybtprinter.ui.BTPrinterViewModel
 import kotlinx.android.synthetic.main.fragment_device_list.*
 
-class StoredDeviceListFragment : Fragment(), OnStoredDeviceListFooterClickListener {
+class StoredDeviceListFragment : Fragment(), OnStoredDeviceListFooterClickListener,
+    OnDeviceItemClickListener {
 
     lateinit var viewModel: BTPrinterViewModel
 
-    private val mStoredDeviceListAdapter by lazy { StoredDeviceListAdapter(this) }
+    private val mStoredDeviceListAdapter by lazy { StoredDeviceListAdapter(this, this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +49,10 @@ class StoredDeviceListFragment : Fragment(), OnStoredDeviceListFooterClickListen
 
     override fun onFooterClickAndOpenDiscovery() {
         viewModel.openDiscoveryPage()
+    }
+
+    override fun onDeviceClick(device: BluetoothDevice) {
+        viewModel.openStoredDeviceActionDialog(device)
     }
 
 }

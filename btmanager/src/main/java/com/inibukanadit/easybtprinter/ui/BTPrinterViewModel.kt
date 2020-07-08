@@ -6,16 +6,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inibukanadit.easybtprinter.common.lifecycle.CombinedTransformation
 import com.inibukanadit.easybtprinter.common.lifecycle.event.LiveEvent
 import com.inibukanadit.easybtprinter.common.lifecycle.event.MutableLiveEvent
 import com.inibukanadit.easybtprinter.common.mutateList
 import com.inibukanadit.easybtprinter.common.util.BTPrinterUtil
+import com.inibukanadit.easybtprinter.data.DeviceStorage
 import com.inibukanadit.easybtprinter.receiver.BTPrinterActionListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
+class BTPrinterViewModel(
+    private val mDeviceStorage: DeviceStorage
+) : ViewModel(), BTPrinterActionListener {
 
     /*
      * Listen to discovery status :
@@ -25,11 +27,22 @@ class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
     private val _isDiscovering by lazy { MutableLiveEvent<Boolean>() }
     val isDiscovering: LiveEvent<Boolean> = _isDiscovering
 
-    private val _openDiscoveryPageEvent by lazy { MutableLiveEvent<Unit>() }
-    val openDiscoveryPageEvent: LiveEvent<Unit> = _openDiscoveryPageEvent
+    private val _openDeviceDiscoveryPageEvent by lazy { MutableLiveEvent<Boolean>() }
+    val openDeviceDiscoveryPageEvent: LiveEvent<Boolean> = _openDeviceDiscoveryPageEvent
 
-    private val _openBluetoothActionDialogEvent by lazy { MutableLiveEvent<BluetoothDevice>() }
-    val openBluetoothActionDialogEvent: LiveEvent<BluetoothDevice> = _openBluetoothActionDialogEvent
+    private val _openStoredDeviceListPageEvent by lazy { MutableLiveEvent<Boolean>() }
+    val openStoredDeviceListPageEvent: LiveEvent<Boolean> = _openStoredDeviceListPageEvent
+
+    private val _openDiscoveryDeviceActionDialogEvent by lazy { MutableLiveEvent<BluetoothDevice>() }
+    val openDiscoveryDeviceActionDialogEvent: LiveEvent<BluetoothDevice> =
+        _openDiscoveryDeviceActionDialogEvent
+
+    private val _openStoredDeviceActionDialogEvent by lazy { MutableLiveEvent<BluetoothDevice>() }
+    val openStoredDeviceActionDialogEvent: LiveEvent<BluetoothDevice> =
+        _openStoredDeviceActionDialogEvent
+
+    private val _openPreviousPage by lazy { MutableLiveEvent<Unit>() }
+    val openPreviousPage: LiveEvent<Unit> = _openPreviousPage
 
     /*
      * List of paired devices which obtained from bondedDevices function in adapter
@@ -54,25 +67,15 @@ class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
     /*
      * List of saved device addresses on test print
      */
-    private val _savedDeviceAddressList by lazy {
-        MutableLiveData<Set<String>>().apply {
-            value = emptySet()
+    private val _storedDeviceList by lazy {
+        MutableLiveData<List<BluetoothDevice>>().apply {
+            value = emptyList()
         }
     }
-    val savedDeviceAddressList: LiveData<Set<String>> = _savedDeviceAddressList
+    val storedDeviceList: LiveData<List<BluetoothDevice>> = _storedDeviceList
 
-    val storedDeviceList by lazy {
-        CombinedTransformation<List<BluetoothDevice>>(savedDeviceAddressList, pairedDeviceList) {
-            val addressList = it[0] as Set<String>? ?: return@CombinedTransformation emptyList()
-            val deviceList =
-                it[1] as List<BluetoothDevice>? ?: return@CombinedTransformation emptyList()
-
-            deviceList.filter { device ->
-                val address = (device as BluetoothDevice?)?.address
-                val contained = addressList.contains(address)
-                contained
-            }
-        }
+    init {
+        fetchStoredDevices()
     }
 
     override fun onDeviceFound(device: BluetoothDevice) {
@@ -91,6 +94,9 @@ class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
         _isDiscovering.put(false)
     }
 
+    /**
+     * Common actions
+     */
     fun toggleDiscovery() {
         if (BTPrinterUtil.isDiscovering()) BTPrinterUtil.cancelDiscovery()
         else BTPrinterUtil.startDiscovery()
@@ -105,19 +111,38 @@ class BTPrinterViewModel : ViewModel(), BTPrinterActionListener {
         }
     }
 
-    fun saveDevice(device: BluetoothDevice) {
-        Log.d("ViewModel", "Save device : ${device.address}")
+    /**
+     * Stored devices
+     */
+    fun fetchStoredDevices() {
+        _storedDeviceList.value = mDeviceStorage.all()
+    }
+
+    fun saveAsStoredDevice(device: BluetoothDevice) {
+        mDeviceStorage.store(device)
+        fetchStoredDevices()
+
+        _openPreviousPage.put(Unit)
+    }
+
+    fun deleteStoredDevice(device: BluetoothDevice) {
+        mDeviceStorage.remove(device)
+        fetchStoredDevices()
     }
 
     /**
      * open page / ui related functions
      */
     fun openDiscoveryPage() {
-        _openDiscoveryPageEvent.put(Unit)
+        _openDeviceDiscoveryPageEvent.put(true)
     }
 
-    fun openBluetoothActionDialog(device: BluetoothDevice) {
-        _openBluetoothActionDialogEvent.put(device)
+    fun openDiscoveryDeviceActionDialog(device: BluetoothDevice) {
+        _openDiscoveryDeviceActionDialogEvent.put(device)
+    }
+
+    fun openStoredDeviceActionDialog(device: BluetoothDevice) {
+        _openStoredDeviceActionDialogEvent.put(device)
     }
 
 }

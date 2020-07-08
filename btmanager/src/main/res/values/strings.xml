@@ -1,17 +1,24 @@
 <resources>
     <string name="app_name">Easy BTPrinter</string>
-    <string name="ask_save_as_saved_device">Save \'%s\' as saved device?</string>
+    <string name="title_favorite_device">Favorite Devices</string>
+    <string name="title_discovery">Connect to new Device</string>
+    <string name="ask_save_as_saved_device">Save \'%s\' to favorite devices?</string>
     <string name="notice_permissions_required">The requested permissions are required to use this feature</string>
     <string name="notice_bluetooth_unsupported">Bluetooth not supported</string>
     <string name="hint_discovering_devices">Discovering available devices ..</string>
     <string name="hint_discovered">All set! Tap here to re-discover.</string>
-    <string name="hint_tap_to_add_device">Tap here to add new stored device ..</string>
+    <string name="hint_tap_to_add_device">Tap here to add new favorite device ..</string>
     <string name="notice_bluetooth_turned_off">Bluetooth turned off.</string>
     <string name="paired">Paired</string>
     <string name="cancel">Cancel</string>
 
-    <string-array name="bt_action_chooser">
-        <item>Try test print</item>
-        <item>Add as saved device</item>
+    <string-array name="bt_discover_actions">
+        <item>Start test print</item>
+        <item>Add to favorite</item>
+    </string-array>
+
+    <string-array name="bt_stored_actions">
+        <item>Start test print</item>
+        <item>Remove from favorite</item>
     </string-array>
 </resources>

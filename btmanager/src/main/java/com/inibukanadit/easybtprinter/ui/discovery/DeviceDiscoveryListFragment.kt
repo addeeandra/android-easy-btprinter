@@ -60,7 +60,7 @@ class DeviceDiscoveryListFragment : Fragment(), OnDeviceDiscoveryListFooterClick
     }
 
     override fun onDeviceClick(device: BluetoothDevice) {
-        viewModel.openBluetoothActionDialog(device)
+        viewModel.openDiscoveryDeviceActionDialog(device)
     }
 
 }

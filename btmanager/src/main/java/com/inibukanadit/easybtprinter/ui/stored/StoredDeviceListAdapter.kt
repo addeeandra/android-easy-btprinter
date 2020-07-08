@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.inibukanadit.easybtprinter.common.util.DiffUtil
 import com.inibukanadit.easybtprinter.databinding.ListDeviceBinding
 import com.inibukanadit.easybtprinter.databinding.ListDeviceStoredFooterBinding
+import com.inibukanadit.easybtprinter.listeners.OnDeviceItemClickListener
 import com.inibukanadit.easybtprinter.listeners.OnStoredDeviceListFooterClickListener
 
 class StoredDeviceListAdapter(
-    private val mFooterClickListener: OnStoredDeviceListFooterClickListener
+    private val mFooterClickListener: OnStoredDeviceListFooterClickListener,
+    private val mOnDeviceItemClickListener: OnDeviceItemClickListener
 ) : ListAdapter<BluetoothDevice, StoredDeviceListAdapter.ViewHolder>(DiffUtil.ofBluetoothDevice()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,7 +33,7 @@ class StoredDeviceListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder) {
-            is NormalViewHolder -> holder.bind(getItem(position))
+            is NormalViewHolder -> holder.bind(getItem(position), mOnDeviceItemClickListener)
             is FooterViewHolder -> holder.bind(mFooterClickListener)
         }
     }
@@ -49,7 +51,8 @@ class StoredDeviceListAdapter(
     inner class NormalViewHolder(
         private val binding: ListDeviceBinding
     ) : ViewHolder(binding.root) {
-        fun bind(device: BluetoothDevice) {
+        fun bind(device: BluetoothDevice, listener: OnDeviceItemClickListener) {
+            binding.listener = listener
             binding.data = device
             binding.executePendingBindings()
         }
