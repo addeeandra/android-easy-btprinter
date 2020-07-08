@@ -6,8 +6,8 @@ No more struggle on discovering, storing or picking stored devices to print dire
 
 In Development
 - [x] Device discoveries
-- [ ] Store a printer device - possible even on before or after test print
+- [x] Store a printer device - possible even on before or after test print
 - [x] Test print directly - in discovery page
-- [ ] Test print directly - in stored devices page
-- [ ] Reusable dialog call - to print on choosen stored device
+- [x] Test print directly - in stored devices page
+- [ ] Reusable dialog call - callable everywhere, to print on choosen favorite (stored) device
 - [ ] Make a stored device as 'default'
