@@ -34,12 +34,10 @@ class BTPrinterViewModel(
     val openStoredDeviceListPageEvent: LiveEvent<Boolean> = _openStoredDeviceListPageEvent
 
     private val _openDiscoveryDeviceActionDialogEvent by lazy { MutableLiveEvent<BluetoothDevice>() }
-    val openDiscoveryDeviceActionDialogEvent: LiveEvent<BluetoothDevice> =
-        _openDiscoveryDeviceActionDialogEvent
+    val openDiscoveryDeviceActionDialogEvent: LiveEvent<BluetoothDevice> = _openDiscoveryDeviceActionDialogEvent
 
     private val _openStoredDeviceActionDialogEvent by lazy { MutableLiveEvent<BluetoothDevice>() }
-    val openStoredDeviceActionDialogEvent: LiveEvent<BluetoothDevice> =
-        _openStoredDeviceActionDialogEvent
+    val openStoredDeviceActionDialogEvent: LiveEvent<BluetoothDevice> = _openStoredDeviceActionDialogEvent
 
     private val _openPreviousPage by lazy { MutableLiveEvent<Unit>() }
     val openPreviousPage: LiveEvent<Unit> = _openPreviousPage
@@ -105,9 +103,9 @@ class BTPrinterViewModel(
     fun testPrint(device: BluetoothDevice, content: String) {
         Log.d("ViewModel", "Test print : $content")
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ViewModel", "Starting printing ..")
+            Log.d("ViewModel", "Starting immediate print ..")
             BTPrinterUtil.immediatePrintToDevice(device, content)
-            Log.d("ViewModel", "Printing completed ..")
+            Log.d("ViewModel", "Immediate print completed ..")
         }
     }
 

@@ -28,16 +28,10 @@ class BTPrinterActivity : AppCompatActivity() {
     private val mDeviceStorage by lazy { DevicePreferenceStorage(this) }
     private val mBTActionReceiver by lazy { BTPrinterActionReceiver(viewModel) }
 
-    private val mStoredDeviceListTitle by lazy {
-        intent.getStringExtra(TITLE_FAVORITE) ?: getString(
-            R.string.title_favorite_device
-        )
-    }
+    private val mStoredDeviceListTitle by lazy { intent.getStringExtra(TITLE_FAVORITE) ?: getString(R.string.title_favorite_device) }
     private val mStoredDeviceListFragment by lazy { StoredDeviceListFragment() }
 
-    private val mDeviceDiscoveryListTitle by lazy {
-        intent.getStringExtra(TITLE_DISCOVERY) ?: getString(R.string.title_discovery)
-    }
+    private val mDeviceDiscoveryListTitle by lazy { intent.getStringExtra(TITLE_DISCOVERY) ?: getString(R.string.title_discovery) }
     private val mDeviceDiscoveryListFragment by lazy { DeviceDiscoveryListFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -5,10 +5,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:hint="Filled me to test content print"
+        android:text="Test print " />
+
+    <Button
+        android:id="@+id/btn_open_direct_printing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_content"
+        android:layout_centerInParent="true"
+        android:text="Direct Print a Content" />
+
+
     <Button
         android:id="@+id/btn_open_discoveries"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/btn_open_direct_printing"
         android:layout_centerInParent="true"
         android:text="Open Discoveries" />
 

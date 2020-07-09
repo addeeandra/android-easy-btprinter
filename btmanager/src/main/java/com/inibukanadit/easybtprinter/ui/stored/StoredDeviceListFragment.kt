@@ -35,7 +35,6 @@ class StoredDeviceListFragment : Fragment(), OnStoredDeviceListFooterClickListen
     }
 
     private fun onPrepareListView() {
-        rv_devices.setHasFixedSize(true)
         rv_devices.addItemDecoration(RecyclerUtil.getDivider(requireContext()))
         rv_devices.layoutManager = RecyclerUtil.getLayoutManager(requireContext())
         rv_devices.adapter = mStoredDeviceListAdapter
